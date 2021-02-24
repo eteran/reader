@@ -40,5 +40,6 @@ if (isdigit(reader.peek())) {
 ```
 
 ### skipping whitespace
+```
 reader.consume_whitespace(); // skips ' ' and '\t'
- 
+ ```
