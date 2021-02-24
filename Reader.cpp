@@ -97,6 +97,28 @@ auto Reader::match_any() -> optional<std::string> {
 
 /**
  * @brief Reader::match
+ * @param regex
+ * @return
+ */
+auto Reader::match(const std::regex &regex) -> optional<std::string> {
+
+	std::cmatch matches;
+
+	const char *first = &input_[index_];
+	const char *last  = &input_[input_.size()];
+
+	if (std::regex_search(first, last, matches, regex)) {
+		std::string m = std::string(matches[0].first, matches[0].second);
+		column_ += m.size();
+		index_ += m.size();
+		return m;
+	}
+
+	return {};
+}
+
+/**
+ * @brief Reader::match
  * @param s
  * @return
  */
