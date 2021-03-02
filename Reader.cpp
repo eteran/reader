@@ -107,7 +107,7 @@ auto Reader::match(const std::regex &regex) -> optional<std::string> {
 	const char *first = &input_[index_];
 	const char *last  = &input_[input_.size()];
 
-	if (std::regex_search(first, last, matches, regex)) {
+	if (std::regex_search(first, last, matches, regex, std::regex_constants::match_continuous)) {
 		std::string m = std::string(matches[0].first, matches[0].second);
 		column_ += m.size();
 		index_ += m.size();

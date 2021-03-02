@@ -16,8 +16,8 @@ struct Token {
 	std::string value;
 };
 
-const std::regex integer_regex(R"(^(0|[1-9][0-9]*))");
-const std::regex identifier_regex(R"(^[_a-zA-Z$][_a-zA-Z0-9]*)");
+const std::regex integer_regex(R"((0|[1-9][0-9]*))");
+const std::regex identifier_regex(R"([_a-zA-Z$][_a-zA-Z0-9]*)");
 
 const char input[] = R"(
 int main() {
