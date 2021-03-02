@@ -42,7 +42,7 @@ if (isdigit(reader.peek())) {
 
 ### Match character based on a predicate
 ```
-auto key = in.match_if([](char ch) {
+auto key = reader.match_if([](char ch) {
 	return isalnum(ch) || ch == '-' || ch == '_';
 });
 
