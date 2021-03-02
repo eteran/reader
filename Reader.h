@@ -40,11 +40,12 @@ public:
 	bool eof() const;
 	char peek() const;
 	char read();
-	void consume(string_view chars);
-	void consume_whitespace();
+	size_t consume(string_view chars);
+	size_t consume_whitespace();
 
 	template <class Pred>
-	void consume_while(Pred pred) {
+	size_t consume_while(Pred pred) {
+		size_t count = 0;
 		while (!eof()) {
 			char ch = peek();
 
@@ -53,7 +54,9 @@ public:
 			}
 
 			read();
+			++count;
 		}
+		return count;
 	}
 
 	bool match(char ch);

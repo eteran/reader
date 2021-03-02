@@ -58,7 +58,7 @@ bool Reader::eof() const {
  * @brief Reader::consume
  * @param chars
  */
-void Reader::consume(string_view chars) {
+size_t Reader::consume(string_view chars) {
 
 	// consume while the next character is in the input set
 	return consume_while([chars](char ch) {
@@ -69,7 +69,7 @@ void Reader::consume(string_view chars) {
 /**
  * @brief Reader::consume_whitespace
  */
-void Reader::consume_whitespace() {
+size_t Reader::consume_whitespace() {
 
 	// consume while the next character is whitespace
 	return consume_while([](char ch) {
