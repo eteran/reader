@@ -30,7 +30,7 @@ public:
 #endif
 
 public:
-	Reader() {};
+	Reader() = default;
 	explicit Reader(string_view input);
 	Reader(const Reader &other) = default;
 	Reader &operator=(const Reader &rhs) = default;
