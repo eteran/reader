@@ -31,20 +31,20 @@ public:
 
 public:
 	Reader() = default;
-	explicit Reader(string_view input);
+	explicit Reader(string_view input) noexcept;
 	Reader(const Reader &other) = default;
 	Reader &operator=(const Reader &rhs) = default;
-	~Reader()                       = default;
+	~Reader()                            = default;
 
 public:
-	bool eof() const;
-	char peek() const;
-	char read();
-	size_t consume(string_view chars);
-	size_t consume_whitespace();
+	bool eof() const noexcept;
+	char peek() const noexcept;
+	char read() noexcept;
+	size_t consume(string_view chars) noexcept;
+	size_t consume_whitespace() noexcept;
 
 	template <class Pred>
-	size_t consume_while(Pred pred) {
+	size_t consume_while(Pred pred) noexcept {
 		size_t count = 0;
 		while (!eof()) {
 			char ch = peek();
@@ -59,8 +59,8 @@ public:
 		return count;
 	}
 
-	bool match(char ch);
-	bool match(string_view s);
+	bool match(char ch) noexcept;
+	bool match(string_view s) noexcept;
 	optional<std::string> match_any();
 
 	optional<std::string> match(const std::regex &regex);
@@ -83,9 +83,9 @@ public:
 		return {};
 	}
 
-	size_t index() const;
-	size_t line() const;
-	size_t column() const;
+	size_t index() const noexcept;
+	size_t line() const noexcept;
+	size_t column() const noexcept;
 
 private:
 	string_view input_;
