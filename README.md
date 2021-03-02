@@ -8,6 +8,7 @@ A class that makes writing a parser programatically easy
 ```
 Reader reader(source);
 
+// recommended that the tokens are sorted by length because the first match wins
 if (reader.match("++")) {
 	// make increment token
 } else if (reader.match("--")) {
@@ -16,7 +17,7 @@ if (reader.match("++")) {
 ...
 ```
 
-### Reading numbers
+### Reading numbers (using a regex)
 
 ```
 if (isdigit(reader.peek())) {
@@ -39,6 +40,19 @@ if (isdigit(reader.peek())) {
 }
 ```
 
+### Match character based on a predicate
+```
+auto key = in.match_if([](char ch) {
+	return isalnum(ch) || ch == '-' || ch == '_';
+});
+
+if (!key) {
+    return malformed_key();
+}
+use_character(*key);
+```
+
 ### skipping whitespace
+```
 reader.consume_whitespace(); // skips ' ' and '\t'
- 
+ ```
