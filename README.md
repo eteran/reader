@@ -40,9 +40,12 @@ if (isdigit(reader.peek())) {
 }
 ```
 
-### Match character based on a predicate
+### Match characters based on a predicate
+
+
 ```
-auto key = reader.match_if([](char ch) {
+// This effectively matches the regex: "[a-zA-Z0-9_-]+"
+auto key = reader.match_while([](char ch) {
 	return isalnum(ch) || ch == '-' || ch == '_';
 });
 
