@@ -133,7 +133,8 @@ bool Reader::match(string_view s) noexcept {
 	size_t new_column_ = column_;
 
 	for (size_t i = 0; i < s.size(); ++i) {
-		if (input_[index_ + i] != s[i]) {
+		const char ch = input_[index_ + i];
+		if (ch != s[i]) {
 			return false;
 		}
 
