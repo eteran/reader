@@ -8,10 +8,10 @@ target_link_libraries(Reader-test
 	Reader
 )
 
-set_target_properties(Reader 
-PROPERTIES 
+set_target_properties(Reader-test
+	PROPERTIES
 	RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
-	CXX_STANDARD 14
+	CXX_STANDARD 17
 	CXX_EXTENSIONS OFF
 )
 

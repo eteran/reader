@@ -9,17 +9,14 @@ add_library(Reader
 )
 
 target_include_directories(Reader
-PUBLIC
+	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-set_target_properties(Reader 
-PROPERTIES 
-	CXX_STANDARD 14
+set_target_properties(Reader
+	PROPERTIES
+	CXX_STANDARD 17
 	CXX_EXTENSIONS OFF
 )
 
 add_subdirectory(test)
-
-
-
