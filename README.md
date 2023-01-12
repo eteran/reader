@@ -1,5 +1,5 @@
 # reader
-A class that makes writing a parser programatically easy
+A class that makes writing a parser programmatically easy
 
 ## Common usage patterns:
 
@@ -35,7 +35,7 @@ if (isdigit(reader.peek())) {
 		(void)ex;
 		return overflow_in_numeric_constant();
 	}
-	
+
 	// create number token or convert to integer here
 }
 ```
