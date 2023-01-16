@@ -18,10 +18,13 @@ struct Token {
 
 const std::regex integer_regex(R"((0|[1-9][0-9]*))");
 const std::regex identifier_regex(R"([_a-zA-Z$][_a-zA-Z0-9]*)");
+const std::regex whitespace_regex(R"([ \t\r\n]+|//.+)");
 
 const char input[] = R"(
 int main() {
-	return 42;
+	// A C++ style comment
+	return /* A C style
+	multi-line comment */ 42;
 }
 )";
 
@@ -34,8 +37,20 @@ int main() {
 
 	while (true) {
 
-		// we always alway whitespace (including newlines) between tokens
-		reader.consume(" \t\n");
+		// we always consume whitespace (including newlines) between tokens
+		while (true) {
+
+			// consume multiline comments while we can
+			if (reader.match("/*")) {
+				while (!reader.match("*/")) {
+					reader.read();
+				}
+			}
+
+			if (!reader.match(whitespace_regex)) {
+				break;
+			}
+		}
 
 		// if we reach end of the stream, we're done!
 		if (reader.eof()) {
