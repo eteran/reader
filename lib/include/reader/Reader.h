@@ -78,7 +78,7 @@ public:
 	 */
 	size_t consume(std::basic_string_view<Ch> chars) noexcept {
 		return consume_while([chars](Ch ch) {
-			return chars.find(ch) != std::basic_string<Ch>::npos;
+			return chars.find(ch) != std::basic_string_view<Ch>::npos;
 		});
 	}
 
@@ -105,13 +105,12 @@ public:
 	size_t consume_while(Pred pred) noexcept {
 		size_t count = 0;
 		while (!eof()) {
-			Ch ch = peek();
-
+			const Ch ch = peek();
 			if (!pred(ch)) {
 				break;
 			}
 
-			read();
+			++index_;
 			++count;
 		}
 		return count;
@@ -178,7 +177,7 @@ public:
 		const Ch *last  = &input_[input_.size()];
 
 		if (std::regex_search(first, last, matches, regex, std::regex_constants::match_continuous)) {
-			std::basic_string<Ch> m = std::basic_string<Ch>(matches[0].first, matches[0].second);
+			std::basic_string<Ch> m(matches[0].first, matches[0].second);
 			index_ += m.size();
 			return m;
 		}
@@ -195,15 +194,18 @@ public:
 	 */
 	template <class Pred>
 	std::optional<std::basic_string<Ch>> match_while(Pred pred) {
-		std::basic_string<Ch> m;
+
+		size_t start = index_;
 		while (!eof()) {
 			const Ch ch = peek();
 			if (!pred(ch)) {
 				break;
 			}
-			m.push_back(read());
+
+			++index_;
 		}
 
+		std::basic_string<Ch> m(&input_[start], &input_[index_]);
 		if (!m.empty()) {
 			return m;
 		}

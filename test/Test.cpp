@@ -28,11 +28,11 @@ int main() {
 }
 )";
 
-std::vector<Token> tokens;
-
 }
 
-int main() {
+void test_lex_cpp() {
+	std::vector<Token> tokens;
+
 	Reader reader(input);
 
 	while (true) {
@@ -73,8 +73,8 @@ int main() {
 		} else if (reader.match(';')) {
 			tokens.push_back({Token::Delimeter, ";"});
 		} else {
-			std::cout << "Unexpected Token: " << reader.peek() << std::endl;
-			return -1;
+			std::cout << "Unexpected character: " << reader.peek() << std::endl;
+			abort();
 		}
 	}
 
@@ -105,6 +105,34 @@ int main() {
 
 	assert(tokens[8].type == Token::Delimeter);
 	assert(tokens[8].value == "}");
+}
 
-	std::cout << "SUCCESS\n";
+void test_match_while() {
+
+	Reader reader("-123_456:789");
+
+	auto key = reader.match_while([](char ch) {
+		return std::isalnum(ch) || ch == '-' || ch == '_';
+	});
+
+	if (!reader.match(':')) {
+		assert(false);
+	}
+
+	auto value = reader.match_while([](char ch) {
+		return std::isalnum(ch) || ch == '-' || ch == '_';
+	});
+
+	assert(key);
+	assert(*key == "-123_456");
+	assert(value);
+	assert(*value == "789");
+
+	std::cout << *key << std::endl;
+	std::cout << *value << std::endl;
+}
+
+int main() {
+	test_lex_cpp();
+	test_match_while();
 }

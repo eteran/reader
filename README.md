@@ -20,7 +20,7 @@ if (reader.match("++")) {
 ### Reading numbers (using a regex)
 
 ```
-if (isdigit(reader.peek())) {
+if (std::isdigit(reader.peek())) {
 	static const std::regex integer_regex(R"(^(0|[1-9][0-9]*))");
 	auto number = reader.match(integer_regex);
 	if (!number) {
@@ -46,7 +46,7 @@ if (isdigit(reader.peek())) {
 ```
 // This effectively matches the regex: "[a-zA-Z0-9_-]+"
 auto key = reader.match_while([](char ch) {
-	return isalnum(ch) || ch == '-' || ch == '_';
+	return std::isalnum(ch) || ch == '-' || ch == '_';
 });
 
 if (!key) {
