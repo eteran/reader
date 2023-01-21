@@ -77,7 +77,6 @@ public:
 	 * @return size_t
 	 */
 	size_t consume(std::basic_string_view<Ch> chars) noexcept {
-		//
 		return consume_while([chars](Ch ch) {
 			return chars.find(ch) != std::basic_string<Ch>::npos;
 		});
@@ -90,7 +89,6 @@ public:
 	 * @return size_t
 	 */
 	size_t consume_whitespace() noexcept {
-		//
 		return consume_while([](Ch ch) {
 			return (ch == ' ' || ch == '\t');
 		});
@@ -143,20 +141,11 @@ public:
 	 * @return bool
 	 */
 	bool match(std::basic_string_view<Ch> s) noexcept {
-		if (index_ + s.size() > input_.size()) {
+		if (input_.compare(index_, s.size(), s) != 0) {
 			return false;
 		}
 
-		size_t new_index_ = index_ + s.size();
-
-		for (size_t i = 0; i < s.size(); ++i) {
-			const Ch ch = input_[index_ + i];
-			if (ch != s[i]) {
-				return false;
-			}
-		}
-
-		index_ = new_index_;
+		index_ += s.size();
 		return true;
 	}
 
@@ -166,16 +155,13 @@ public:
 	 * @return std::optional<std::basic_string<Ch>>
 	 */
 	std::optional<std::basic_string<Ch>> match_any() {
-		std::basic_string<Ch> m;
-		while (!eof()) {
-			m.push_back(read());
+		if (eof()) {
+			return {};
 		}
 
-		if (!m.empty()) {
-			return m;
-		}
-
-		return {};
+		std::basic_string<Ch> m = input_.substr(index_);
+		index_ += m.size();
+		return m;
 	}
 
 	/**
