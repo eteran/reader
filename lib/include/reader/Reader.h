@@ -102,7 +102,7 @@ public:
 	 * @return size_t
 	 */
 	template <class Pred>
-	size_t consume_while(Pred pred) noexcept {
+	size_t consume_while(Pred pred) noexcept(noexcept(pred)) {
 		size_t count = 0;
 		while (!eof()) {
 			const Ch ch = peek();
@@ -146,6 +146,23 @@ public:
 
 		index_ += s.size();
 		return true;
+	}
+
+	/**
+	 * @brief Matches a single character if it matches the given predicate
+	 *
+	 * @param pred
+	 * @return Ch
+	 */
+	template <class Pred>
+	Ch match_if(Pred pred) noexcept {
+		Ch ch = peek();
+		if (pred(ch)) {
+			++index_;
+			return ch;
+		}
+
+		return '\0';
 	}
 
 	/**

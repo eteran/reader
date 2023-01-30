@@ -81,11 +81,19 @@ void test_lex_cpp() {
 			tokens.push_back({Token::Delimeter, "}"});
 		} else if (reader.match(';')) {
 			tokens.push_back({Token::Delimeter, ";"});
+		} else if (reader.match(':')) {
+			tokens.push_back({Token::Delimeter, ":"});
 		} else {
 			std::cout << "Unexpected character: " << reader.peek() << std::endl;
 			abort();
 		}
 	}
+
+	printf("----------\n");
+	for (const Token &token : tokens) {
+		printf("%s\n", token.value.c_str());
+	}
+	printf("----------\n");
 
 	// assert that we got what we expected..
 	assert(tokens[0].type == Token::Keyword);
