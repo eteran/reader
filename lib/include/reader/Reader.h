@@ -7,7 +7,6 @@
 #include <optional>
 #include <regex>
 #include <stack>
-#include <string>
 #include <string_view>
 
 template <class Ch>
@@ -54,6 +53,28 @@ public:
 		}
 
 		return input_[index_];
+	}
+
+	/**
+	 * @brief returns true if the next character matches <ch>
+	 *
+	 * @return bool
+	 */
+	bool next_is(Ch ch) const noexcept {
+		return peek() == ch;
+	}
+
+	/**
+	 * @brief returns true if the next characters matches <s>
+	 *
+	 * @return bool
+	 */
+	bool next_is(std::string_view s) const noexcept {
+		if (input_.compare(index_, s.size(), s) != 0) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -124,7 +145,7 @@ public:
 	 * @return bool
 	 */
 	bool match(Ch ch) noexcept {
-		if (peek() != ch) {
+		if (!next_is(ch)) {
 			return false;
 		}
 
@@ -140,7 +161,7 @@ public:
 	 * @return bool
 	 */
 	bool match(std::basic_string_view<Ch> s) noexcept {
-		if (input_.compare(index_, s.size(), s) != 0) {
+		if (!next_is(s)) {
 			return false;
 		}
 
@@ -166,16 +187,38 @@ public:
 	}
 
 	/**
+	 * @brief match until end of input or a newline is found
+	 *
+	 * @return std::basic_string_view<Ch>
+	 */
+	std::basic_string_view<Ch> match_line() noexcept {
+
+		size_t start  = index_;
+		size_t length = consume_while([](char ch) {
+			return ch != '\r' && ch != '\n';
+		});
+
+		match('\r');
+		match('\n');
+
+		if (length == 0) {
+			return {};
+		}
+
+		return input_.substr(start, length);
+	}
+
+	/**
 	 * @brief Matches until the end of the input and returns the string matched
 	 *
-	 * @return std::optional<std::basic_string<Ch>>
+	 * @return std::optional<std::basic_string_view<Ch>>
 	 */
-	std::optional<std::basic_string<Ch>> match_any() {
+	std::optional<std::basic_string_view<Ch>> match_any() {
 		if (eof()) {
 			return {};
 		}
 
-		std::basic_string<Ch> m = input_.substr(index_);
+		std::basic_string_view<Ch> m = input_.substr(index_);
 		index_ += m.size();
 		return m;
 	}
@@ -187,14 +230,14 @@ public:
 	 * @param s
 	 * @return bool
 	 */
-	std::optional<std::basic_string<Ch>> match(const std::basic_regex<Ch> &regex) {
+	std::optional<std::basic_string_view<Ch>> match(const std::basic_regex<Ch> &regex) {
 		std::match_results<const Ch *> matches;
 
 		const Ch *first = &input_[index_];
 		const Ch *last  = &input_[input_.size()];
 
 		if (std::regex_search(first, last, matches, regex, std::regex_constants::match_continuous)) {
-			std::basic_string<Ch> m(matches[0].first, matches[0].second);
+			std::basic_string_view<Ch> m(matches[0].first, matches[0].second - matches[0].first);
 			index_ += m.size();
 			return m;
 		}
@@ -207,10 +250,10 @@ public:
 	 * for each character satisfying the given predicate
 	 *
 	 * @param pred
-	 * @return std::optional<std::basic_string<Ch>>
+	 * @return std::optional<std::basic_string_view<Ch>>
 	 */
 	template <class Pred>
-	std::optional<std::basic_string<Ch>> match_while(Pred pred) {
+	std::optional<std::basic_string_view<Ch>> match_while(Pred pred) {
 
 		size_t start = index_;
 		while (!eof()) {
@@ -222,7 +265,7 @@ public:
 			++index_;
 		}
 
-		std::basic_string<Ch> m(&input_[start], &input_[index_]);
+		std::basic_string_view<Ch> m(&input_[start], index_ - start);
 		if (!m.empty()) {
 			return m;
 		}
@@ -273,38 +316,9 @@ public:
 		return Location{line, col};
 	}
 
-	/**
-	 * @brief Stores the current state of the reader onto the stack
-	 *
-	 */
-	void push_state() {
-		state_.push(index_);
-	}
-
-	/**
-	 * @brief Removes the most recently pushed state from the stack
-	 *
-	 */
-	void pop_state() {
-		assert(!state_.empty());
-		state_.pop();
-	}
-
-	/**
-	 * @brief Sets the current state to the most recently pushed state from the stack, and then
-	 * removes the most recently pushed state from the stack
-	 *
-	 */
-	void restore_state() {
-		assert(!state_.empty());
-		index_ = state_.top();
-		state_.pop();
-	}
-
 private:
 	std::basic_string_view<Ch> input_;
 	size_t index_ = 0;
-	std::stack<size_t> state_;
 };
 
 using Reader = BasicReader<char>;

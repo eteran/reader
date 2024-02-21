@@ -66,11 +66,11 @@ void test_lex_cpp() {
 
 		// extract the next token...
 		if (auto keyword = reader.match(keyword_regex)) {
-			tokens.push_back({Token::Keyword, *keyword});
+			tokens.push_back({Token::Keyword, std::string(*keyword)});
 		} else if (auto ident = reader.match(identifier_regex)) {
-			tokens.push_back({Token::Identifier, *ident});
+			tokens.push_back({Token::Identifier, std::string(*ident)});
 		} else if (auto integer = reader.match(integer_regex)) {
-			tokens.push_back({Token::Number, *integer});
+			tokens.push_back({Token::Number, std::string(*integer)});
 		} else if (reader.match('(')) {
 			tokens.push_back({Token::Delimeter, "("});
 		} else if (reader.match(')')) {
